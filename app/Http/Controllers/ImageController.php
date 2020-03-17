@@ -38,12 +38,17 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        $csv = $request->file('submit');
-
-        return response()
-            ->json([
-                $csv
-            ], 200);
+        if ($request->file)
+        {
+            $data = $request->file;
+            return response()
+                ->json($data, 200);
+        }
+        else
+        {
+            return response()
+                ->json('File is required', 400);
+        }
     }
 
     /**
