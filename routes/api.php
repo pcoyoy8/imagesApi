@@ -20,3 +20,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('getAll', 'ImageController@index');
 Route::get('getById/{id}', 'ImageController@show');
+Route::post('store', 'ImageController@store');

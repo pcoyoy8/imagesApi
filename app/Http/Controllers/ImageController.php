@@ -34,11 +34,16 @@ class ImageController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-        //
+        $csv = $request->file('submit');
+
+        return response()
+            ->json([
+                $csv
+            ], 200);
     }
 
     /**
@@ -49,8 +54,10 @@ class ImageController extends Controller
      */
     public function show($id)
     {
+        $image = Image::find($id);
+
         return response()
-            ->json($id, 200);
+            ->json($image, 200);
     }
 
     /**
