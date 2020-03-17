@@ -40,7 +40,7 @@ class ImageController extends Controller
     {
         if ($request->file)
         {
-            $data = $request->file;
+            $data = $request;
             return response()
                 ->json($data, 200);
         }
