@@ -4,9 +4,47 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Image;
+use Illuminate\Support\Facades\File;
 
 class ImageController extends Controller
 {
+    private function handleFile($resource)
+    {
+        $fileName = $resource->getClientOriginalName();
+        $filePath = public_path('uploads/'. $fileName);
+        $resource->move(public_path('uploads/'), $fileName);
+
+        $data = array_map('str_getcsv',
+            file($filePath));
+
+        File::delete($filePath);
+        $values = [];
+        foreach ($data as $item)
+        {
+            $value = explode('|', array_shift($item));
+
+            switch (count($value))
+            {
+                case 2:
+                    $values[] = [
+                        'name' => $value[0],
+                        'url' => $value[1]
+                        ];
+                    break;
+                case 3:
+                    $values[] = [
+                        'name' => $value[0],
+                        'url' => $value[1],
+                        'description' => $value[2]
+                    ];
+                    break;
+                default:
+                    break;
+            }
+        }
+        return $values;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -38,9 +76,11 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->file)
+        if ($request->hasFile('file'))
         {
-            $data = $request;
+            $file = $request->file('file');
+            $data = $this->handleFile($file);
+
             return response()
                 ->json($data, 200);
         }
