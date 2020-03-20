@@ -104,7 +104,7 @@ class ImageController extends Controller
             }
 
             return response()
-                ->json($data, 200);
+                ->json($images, 200);
         }
         else
         {

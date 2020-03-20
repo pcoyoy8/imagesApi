@@ -16,7 +16,10 @@ class Image extends Model
 
     public function getDownloadUrlAttribute($value)
     {
-        return Storage::disk('public')
-            ->url($value);
+        return [
+            'url' => Storage::disk('public')
+                        ->url($value),
+            'reference' => $value
+        ];
     }
 }
