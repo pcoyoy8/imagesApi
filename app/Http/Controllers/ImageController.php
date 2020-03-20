@@ -77,10 +77,19 @@ class ImageController extends Controller
      */
     public function index()
     {
-        $images = Image::all();
+        try {
+            $images = Image::all();
 
-        return response()
-            ->json($images, 200);
+            return response()
+                ->json($images, 200);
+        } catch (\Exception $e)
+        {
+            return response()
+                ->json([
+                    'Error' => get_class($e),
+                    'Message' => $e->getMessage()
+                ], 500);
+        }
     }
 
     /**
@@ -91,25 +100,34 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->hasFile('file'))
-        {
-            $file = $request->file('file');
-            $data = $this->getData($file);
+        try {
+            if ($request->hasFile('file'))
+            {
+                $file = $request->file('file');
+                $data = $this->getData($file);
 
-            $images = [];
-            foreach ($data as $item) {
-                $images[] = Image::updateOrCreate(
-                    ['id' => $item['id']],
-                    $item);
+                $images = [];
+                foreach ($data as $item) {
+                    $images[] = Image::updateOrCreate(
+                        ['id' => $item['id']],
+                        $item);
+                }
+
+                return response()
+                    ->json($images, 200);
             }
-
-            return response()
-                ->json($images, 200);
-        }
-        else
+            else
+            {
+                return response()
+                    ->json('File is required', 400);
+            }
+        } catch (\Exception $e)
         {
             return response()
-                ->json('File is required', 400);
+                ->json([
+                    'Error' => get_class($e),
+                    'Message' => $e->getMessage()
+                ], 500);
         }
     }
 
@@ -121,10 +139,19 @@ class ImageController extends Controller
      */
     public function show($id)
     {
-        $image = Image::find($id);
+        try {
+            $image = Image::find($id);
 
-        return response()
-            ->json($image, 200);
+            return response()
+                ->json($image, 200);
+        } catch (\Exception $e)
+        {
+            return response()
+                ->json([
+                    'Error' => get_class($e),
+                    'Message' => $e->getMessage()
+                ], 500);
+        }
     }
 
 }
