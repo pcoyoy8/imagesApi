@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Image;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
-    private function handleFile($resource)
+    private function getData($resource)
     {
         $fileName = $resource->getClientOriginalName();
         $filePath = public_path('uploads/'. $fileName);
@@ -23,26 +24,50 @@ class ImageController extends Controller
         {
             $value = explode('|', array_shift($item));
 
-            switch (count($value))
+            if(count($value) >= 2)
             {
-                case 2:
+                $url = preg_replace('/\s+/', '', $value[1]);
+                $result = $this->validateImage($url);
+                if($result)
+                {
+                    $record = Image::where('picture_title', '=', $value[0])->first();
                     $values[] = [
-                        'name' => $value[0],
-                        'url' => $value[1]
-                        ];
-                    break;
-                case 3:
-                    $values[] = [
-                        'name' => $value[0],
-                        'url' => $value[1],
-                        'description' => $value[2]
+                        'id' => ($record) ? $record->id : null,
+                        'picture_title' => $value[0],
+                        'picture_url' => $url,
+                        'download_url' => $result,
+                        'picture_description' => (array_key_exists(2, $value)) ? $value[2] : ''
                     ];
-                    break;
-                default:
-                    break;
+                }
             }
         }
         return $values;
+    }
+
+    private function validateImage($imageUrl)
+    {
+        if(filter_var($imageUrl, FILTER_VALIDATE_URL) !== false)
+        {
+            $headers = get_headers($imageUrl, 1);
+            $type = $headers["Content-Type"];
+            if(substr($type, 0, 5) === 'image')
+            {
+                $file = $this->downloadImage($imageUrl);
+                return $file;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private function downloadImage($url)
+    {
+        $content = file_get_contents($url);
+        $filePath = 'download/' . uniqid();
+        Storage::disk('public')
+            ->put($filePath, $content);
+
+        return $filePath;
     }
 
     /**
@@ -59,16 +84,6 @@ class ImageController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -79,7 +94,14 @@ class ImageController extends Controller
         if ($request->hasFile('file'))
         {
             $file = $request->file('file');
-            $data = $this->handleFile($file);
+            $data = $this->getData($file);
+
+            $images = [];
+            foreach ($data as $item) {
+                $images[] = Image::updateOrCreate(
+                    ['id' => $item['id']],
+                    $item);
+            }
 
             return response()
                 ->json($data, 200);
@@ -105,37 +127,4 @@ class ImageController extends Controller
             ->json($image, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

@@ -16,11 +16,16 @@ class CreateImagesTable extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->string('picture_title')
+                ->charset('utf8')
+                ->collation('utf8_unicode_ci')
                 ->nullable(false)
                 ->unique();
-            $table->string('picture_url')
+            $table->longText('picture_url')
                 ->nullable(false);
-            $table->string('picture_description');
+            $table->string('download_url')
+                ->nullable(true);
+            $table->string('picture_description')
+                ->nullable(true);
             $table->timestamps();
         });
     }

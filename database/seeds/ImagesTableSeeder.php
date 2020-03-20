@@ -17,7 +17,7 @@ class ImagesTableSeeder extends Seeder
         for ($i = 0; $i < 10 ; $i++)
         {
             Image::create([
-                'picture_title' => $faker->uuid,
+                'picture_title' => $faker->streetName,
                 'picture_url' => $faker->url,
                 'picture_description' => $faker->macAddress
             ]);
