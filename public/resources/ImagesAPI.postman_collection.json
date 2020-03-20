@@ -1,0 +1,81 @@
+{
+	"info": {
+		"_postman_id": "d7792d81-943d-4940-98ad-dd7f4cdf2f59",
+		"name": "ImagesAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getAll",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://images.local/api/getAll",
+					"protocol": "http",
+					"host": [
+						"images",
+						"local"
+					],
+					"path": [
+						"api",
+						"getAll"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://images.local/api/getById/8",
+					"protocol": "http",
+					"host": [
+						"images",
+						"local"
+					],
+					"path": [
+						"api",
+						"getById",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "store",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/pablo/Downloads/berlinger_assignment/images_data.csv"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://images.local/api/store",
+					"protocol": "http",
+					"host": [
+						"images",
+						"local"
+					],
+					"path": [
+						"api",
+						"store"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
