@@ -6,11 +6,14 @@
     For test purposes, you can use 775 or 777.
 2. Assign the right owner and group for `public/uploads` and `public/download`.
     In apache is `www-data:www-data`.
+    *Validate permissions for your environment*
 3. Create your `.env` file
-4. Add the database and url configuration
+4. Add the database, queue and url configuration
     ````
     APP_URL=http://images.local
    
+   QUEUE_CONNECTION=database
+
     DB_CONNECTION=mysql
     DB_HOST=127.0.0.1
     DB_PORT=3306
@@ -20,9 +23,13 @@
     ````
 5. In the terminal run the command:
     ````
-    php artisan migrate
+   php artisan migrate
     ````
    
+6. In the terminal run the command (if you don't execute this command the queue will not be available)
+    ````
+   php artisan queue:work
+    ````
 # Notes
 You must to create your own `virtualhost`, set the DocumentRoot (example)
 
