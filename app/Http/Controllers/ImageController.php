@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Image;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
+use App\Jobs\ProcessImage;
 
 class ImageController extends Controller
 {
@@ -62,11 +62,8 @@ class ImageController extends Controller
 
     private function downloadImage($url)
     {
-        $content = file_get_contents($url);
         $filePath = 'download/' . uniqid();
-        Storage::disk('public')
-            ->put($filePath, $content);
-
+        ProcessImage::dispatch($filePath, $url);
         return $filePath;
     }
 

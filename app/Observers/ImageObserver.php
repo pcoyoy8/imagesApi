@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Image;
-use Illuminate\Support\Facades\Storage;
+use App\Jobs\DeleteImage;
 
 class ImageObserver
 {
@@ -19,8 +19,7 @@ class ImageObserver
 
         if ($oldUrl)
         {
-            Storage::disk('public')
-                ->delete($oldUrl['reference']);
+            DeleteImage::dispatch($oldUrl);
         }
     }
 
