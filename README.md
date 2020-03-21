@@ -90,4 +90,4 @@ There are 3 methods:
     - Parameters:
         - file: csv
         
-    
+For testing the application you can use the CSV file, located in `public/resources/images_data.csv`
